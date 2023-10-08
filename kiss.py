@@ -17,7 +17,7 @@ def get_soup(url):
     return soup,response
 
 
-@app.get("/search/{query}")
+@app.get("/api/search/{query}")
 async def search(query: str):
     url = BASE_URL + "Search/SearchSuggest"
     params = {'type': 'drama',
@@ -45,7 +45,7 @@ async def search(query: str):
     }
 
 
-@app.get("/series_info/{query}")
+@app.get("/api/series_info/{query}")
 async def series_info(query: str):
     url = BASE_URL + "Drama/" + query
     soup, response = get_soup(url)
@@ -85,7 +85,7 @@ async def series_info(query: str):
         return series_res
 
 
-@app.get("/stream/{series_id}/{ep_no}")
+@app.get("/api/stream/{series_id}/{ep_no}")
 async def get_stream(series_id: str, ep_no: int):
     url = BASE_URL + f"Drama/{series_id}/Episode-{str(ep_no)}"
     soup, response = get_soup(url)
@@ -113,7 +113,7 @@ async def get_stream(series_id: str, ep_no: int):
                 return "Cannot find any url"
 
 
-@app.get("/latest")
+@app.get("/api/latest")
 async  def latest():
     url = "https://kissasian.lu/"
     soup, response = get_soup(url)
