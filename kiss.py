@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import requests
 from bs4 import BeautifulSoup
-from models import Search, Series, Stream, Latest
+from models import Search, Series, Stream, Latest,SortBy
 import re
 app = FastAPI()
 
@@ -120,8 +120,9 @@ async  def latest():
     latest_res = []
     if response.status_code == 200:
 
+
         for ele in (soup.find("div", class_="item-list").findAll("div", class_="info")):
-            ep_url = ele.find("a").get("href")
+            ep_url = url+ele.find("a").get("href")
             latest_series = ele.find("a").text.strip().split("\n")
             temp = {
                 "title": latest_series[0],
@@ -137,6 +138,89 @@ async  def latest():
         }
 
 
+@app.get("/api/sortby/{query}/{page}")
+async  def sortby(query:str, page:int):
+    url = BASE_URL+f"DramaList/{query}/?page={str(page)}"
+    soup, response = get_soup(url)
+    if response.status_code == 200:
+        if ("Not found" not in str(response.content)):
+
+            sort_by_list = []
+            for ele in (soup.find("div", class_="item-list").findAll("div", class_="item")):
+                temp={
+                    "title":ele.findNext("img").get("title"),
+                    "url":"https://kissasian.lu"+ele.findNext("a").get("href"),
+                    "img_url":"https://kissasian.lu"+ele.findNext("img").get("src"),
+                }
+
+
+                sort_by = SortBy(**temp)
+                sort_by_list.append(sort_by)
+
+            return {
+                "query":query,
+                "page":page,
+                "list_count":len(sort_by_list),
+                "data":sort_by_list
+                }
+    else:
+        return "Invaild Input"
+
+
+@app.get("/api/country/{query}/{page}")
+async  def sortbycountry(query:str, page:int):
+    url = BASE_URL+f"Country/{query}/?page={str(page)}"
+    soup, response = get_soup(url)
+    print(soup)
+    if response.status_code == 200:
+        if ("Not found" not in str(response.content)):
+            sort_by_list = []
+            for ele in (soup.find("div", class_="item-list").findAll("div", class_="col cover")):
+                temp={
+                    "title":ele.findNext("img").get("title"),
+                    "url":"https://kissasian.lu"+ele.findNext("a").get("href"),
+                    "img_url":"https://kissasian.lu"+ele.findNext("img").get("src"),
+                }
+
+
+                sort_by = SortBy(**temp)
+                sort_by_list.append(sort_by)
+
+            return {
+                "query":query,
+                "page":page,
+                "list_count": len(sort_by_list),
+                "data":sort_by_list
+                }
+    else:
+        return "Invaild Input"
+
+@app.get("/api/genre/{query}/{page}")
+async  def sortbygenre(query:str, page:int):
+    url = BASE_URL+f"Genre/{query}/?page={str(page)}"
+    soup, response = get_soup(url)
+    if response.status_code==200:
+        if ("Not found" not in str(response.content)):
+            sort_by_list = []
+            for ele in (soup.find("div", class_="item-list").findAll("div", class_="item")):
+                temp={
+                    "title":ele.findNext("img").get("title"),
+                    "url":"https://kissasian.lu"+ele.findNext("a").get("href"),
+                    "img_url":"https://kissasian.lu"+ele.findNext("img").get("src"),
+                }
+
+
+                sort_by = SortBy(**temp)
+                sort_by_list.append(sort_by)
+
+            return {
+                "query":query,
+                "page":page,
+                "list_count": len(sort_by_list),
+                "data":sort_by_list
+                }
+        else:
+            return "Invaild Input"
 
 
 if __name__ == "__main__":

@@ -25,3 +25,7 @@ class Latest(BaseModel):
     ep_url: str
 
 
+class SortBy(BaseModel):
+    title: str
+    url: str
+    img_url: str
