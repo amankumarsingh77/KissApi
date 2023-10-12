@@ -60,7 +60,7 @@ To deploy this project run
 
 #### Get search results
 
-```http
+```bash
   GET /api/search/${query}
 ```
 
@@ -70,7 +70,7 @@ To deploy this project run
 
 #### Get series information
 
-```http
+```bash
   GET /api/series_info/{id}
 ```
 
@@ -79,7 +79,7 @@ To deploy this project run
 | `id`      | `string` | **Required**. id of the series |
 
 #### Get stream url
-```http
+```bash
   GET /api/stream/{series_id}/{ep_no}
 ```
 
@@ -90,7 +90,7 @@ To deploy this project run
 
 #### Get latest updated series
 
-```http
+```bash
   GET /api/api/latest
 ```
 | Parameter | Type     | Description                       |
